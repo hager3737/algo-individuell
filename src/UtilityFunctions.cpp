@@ -46,12 +46,16 @@ void registeredAltitudeCount(std::vector<SensorData> sensorData) {
     time_t startOfDay = CreateTime(2012, 1, 2, 0, 0, 0);
     time_t endOfDay = CreateTime(2012, 1, 2, 23, 59, 59);
 
-    int count = 0;
-    for (SensorData& data : sensorData) {
-        if (data.GetSensorType() == SensorType::Altitude && data.GetTime() >= startOfDay && data.GetTime() <= endOfDay) {
-            count++;
-        }
-    }
+    //Count_if algoritm
+
+    int count = std::count_if( std::begin(sensorData), std::end(sensorData),
+        [startOfDay, endOfDay](SensorData &s) {return s.GetSensorType() == SensorType::Altitude && s.GetTime() >= startOfDay && s.GetTime() <= endOfDay;}
+     );
+    // for (SensorData& data : sensorData) {
+    //     if (data.GetSensorType() == SensorType::Altitude && data.GetTime() >= startOfDay && data.GetTime() <= endOfDay) {
+    //         count++;
+    //     }
+    // }
 
     if (count > 0) {
         std::cout << "Antalet registreringar för Altitude den 2012-01-02: " << count << std::endl;

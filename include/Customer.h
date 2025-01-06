@@ -8,6 +8,9 @@ class Customer {
     std::string name;
     time_t arrival;
     public:
+
+    Customer(int queueTicket, std::string name, time_t arrival);
+    int getQueueTicket();
 };
 
 
