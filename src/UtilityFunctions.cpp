@@ -1,9 +1,6 @@
 #include "../include/UtilityFunctions.h"
 #include "../include/SensorData.h"
-#include <iostream>
-#include <cstdlib>
-#include <ctime>
-#include <algorithm>
+
 
 void ShowMenu() {
     std::cout << "OPTIONS: " << std::endl;
@@ -46,48 +43,68 @@ void registeredAltitudeCount(std::vector<SensorData> sensorData) {
     time_t startOfDay = CreateTime(2012, 1, 2, 0, 0, 0);
     time_t endOfDay = CreateTime(2012, 1, 2, 23, 59, 59);
 
-    //Count_if algoritm
-
     int count = std::count_if( std::begin(sensorData), std::end(sensorData),
         [startOfDay, endOfDay](SensorData &s) {return s.GetSensorType() == SensorType::Altitude && s.GetTime() >= startOfDay && s.GetTime() <= endOfDay;}
      );
-    // for (SensorData& data : sensorData) {
-    //     if (data.GetSensorType() == SensorType::Altitude && data.GetTime() >= startOfDay && data.GetTime() <= endOfDay) {
-    //         count++;
-    //     }
-    // }
 
     if (count > 0) {
-        std::cout << "Antalet registreringar för Altitude den 2012-01-02: " << count << std::endl;
+        std::cout << "Amount of registrations for Altitude on 2012-01-02: " << count << std::endl;
     } else {
-        std::cout << "Inga registreringar för Altitude den 2012-01-02." << std::endl;
+        std::cout << "No registrations for Altitude on 2012-01-02." << std::endl;
     }
 }
 
 void maxSpeedCheck(std::vector<SensorData> sensorData) {
-    for (SensorData& data : sensorData) {
-        if (data.GetSensorType() == SensorType::SpeedInKmh && data.GetValue() > 99.9) {
-            std::cout << "Maxhastighet uppnådd" << std::endl;
-            return;
-        }
+
+    auto iterator = std::find_if(sensorData.begin(), sensorData.end(), [](SensorData& data) {
+        return data.GetSensorType() == SensorType::SpeedInKmh && data.GetValue() > 99.9;
+    });
+
+    if(iterator != sensorData.end()) {
+        std::cout << "Max speed reached" << std::endl;
+    } 
+    else { 
+        std::cout << "Max speed not reached" << std::endl;
     }
-    std::cout << "Ingen maxhastighet uppnådd" << std::endl;
 }
 
 void fuelConsumptionUpdate(std::vector<SensorData>& sensorData) {
-    std::cout << "Before changes: " << std::endl;
-    for (SensorData& data : sensorData) {
-        if (data.GetSensorType() == SensorType::FuelConsumption) {
-            std::cout << data.GetValue() << std::endl;
-            float temp = 0.75 * data.GetValue();
-            data.SetValue(temp + data.GetValue());
+
+    std::cout << "5 first measuremnets before 75% increase" << std::endl;
+    for(int i = 0; i <= 5; i++) {
+        SensorData& data = sensorData[i];
+        if(data.GetSensorType() == SensorType::FuelConsumption) {
+            std::cout << "Meassurement " << i + 1 << ": " << data.GetValue() << std::endl;
         }
     }
-    std::cout << "After changes: " << std::endl;
-    std::cout << "***************************" << std::endl;
-    for (SensorData& data : sensorData) {
-        if (data.GetSensorType() == SensorType::FuelConsumption) {
-            std::cout << data.GetValue() << std::endl;
+
+    std::for_each(sensorData.begin(), sensorData.end(), [](SensorData& data) {
+        if(data.GetSensorType() == SensorType::FuelConsumption) {
+            data.SetValue(data.GetValue() * 1.75);
+        }
+    });
+
+    std::cout << "\nAfter increase:" << std::endl;
+    for(int i = 0; i <= 5; i++) {
+        SensorData& data = sensorData[i];
+        if(data.GetSensorType() == SensorType::FuelConsumption) {
+            std::cout << "Meassurement " << i + 1 << ": " << data.GetValue() << std::endl;
         }
     }
+
+    // std::cout << "Before changes: " << std::endl;
+    // for (SensorData& data : sensorData) {
+    //     if (data.GetSensorType() == SensorType::FuelConsumption) {
+    //         std::cout << data.GetValue() << std::endl;
+    //         float temp = 0.75 * data.GetValue();
+    //         data.SetValue(temp + data.GetValue());
+    //     }
+    // }
+    // std::cout << "After changes: " << std::endl;
+    // std::cout << "***************************" << std::endl;
+    // for (SensorData& data : sensorData) {
+    //     if (data.GetSensorType() == SensorType::FuelConsumption) {
+    //         std::cout << data.GetValue() << std::endl;
+    //     }
+    // }
 }

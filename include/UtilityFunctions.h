@@ -2,6 +2,10 @@
 #define UTILITYFUNCTIONS_H
 
 #include <vector>
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <algorithm>
 #include "SensorData.h"
 
 void ShowMenu();
