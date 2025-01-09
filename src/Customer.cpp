@@ -1,23 +1,18 @@
 #include "../include/Customer.h"
-#include "../include/Queue.h"
 
-Customer::Customer(std::string name, Queue& queue) 
-    : name(name){
-        auto now = std::chrono::system_clock::now();
-        arrival = std::chrono::system_clock::to_time_t(now);
-
-        if(queue.getAmountOfCustomers() > 0) {
-            queueTicket = queue.getAmountOfCustomers() + 1;
-        } 
-        queueTicket = queue.getAmountOfCustomers();
-    }
-
-int Customer::getAmountOfCustomers() {
-    return queueTicket;
-}
+Customer::Customer(std::string name, int queueTicket) 
+    : name(name), queueTicket(queueTicket), arrivalTime(std::chrono::steady_clock::now()){}
 
 int Customer::getQueueTicket() {
     return queueTicket;
+}
+
+std::string Customer::getName() {
+    return name;
+}
+
+std::chrono::time_point<std::chrono::steady_clock> Customer::getArrivalTime() {
+    return arrivalTime;
 }
 
 

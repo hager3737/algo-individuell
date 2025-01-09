@@ -1,19 +1,23 @@
 #include "../include/Queue.h"
-#include "../include/Customer.h"
-
-Queue::Queue() : amountOfCustomers(0) {}
 
 void Queue::addCustomer(Customer& customer) {
-    customers.push_back(customer);
-    amountOfCustomers++;
+    customers.push(customer);
 }
 
-int Queue::getAmountOfCustomers() {
-    return amountOfCustomers;
-}
-
-std::vector<Customer> Queue::getAllCustomers() {
-    for(Customer& customer : customers) {
-        std::cout << "Ticket: " << customer.getQueueTicket();
+Customer Queue::getNextCustomer() {
+    if(customers.empty()) {
+        throw std::out_of_range("Queue is empty!");
     }
+    Customer nextCustomer = customers.front();
+    customers.pop();
+    return nextCustomer;
+}
+
+bool Queue::isEmpty() {
+    return customers.empty();
+    
+}
+
+size_t Queue::size() {
+    return customers.size();
 }

@@ -1,22 +1,19 @@
 #ifndef CUSTOMER_H
 #define CUSTOMER_H
 
-#include <iostream>
 #include <string>
 #include <chrono>
-
-class Queue;
 
 class Customer {
     int queueTicket;
     std::string name;
-    time_t arrival;
-    int amountOfCustomers;
+    std::chrono::time_point<std::chrono::steady_clock> arrivalTime;
 
     public:
-    Customer(std::string name, Queue& queue);
-    int getAmountOfCustomers();
+    Customer(std::string name, int queueTicket);
+    std::string getName();
     int getQueueTicket();
+    std::chrono::time_point<std::chrono::steady_clock> getArrivalTime();
 };
 
 

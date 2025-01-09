@@ -1,5 +1,6 @@
 #include "include/UtilityFunctions.h"
 #include "include/Queue.h"
+#include "include/MenuFunctions.h"
 #include <vector>
 #include <iostream>
 
@@ -8,34 +9,33 @@ int main() {
     std::vector<SensorData> sensorData;
     FillData(sensorData);
 	Queue queue;
+	int nextQueueNumber = 1;
+	ATM atm;
+	LRUCache cache(10);
 
 	while(true) {
 		int choice = 0;
 		ShowMenu();
 		std::cin >> choice; 
-		int queueNumber = 0;
 
 		if(choice == 1) {
-			registeredAltitudeCount(sensorData);
+			choiceOne(sensorData);
 		}
 		else if(choice == 2) {
 			maxSpeedCheck(sensorData);
+			
 		}
 		else if(choice == 3) {
 			fuelConsumptionUpdate(sensorData);
 		}
 		else if(choice == 4) {
-			int selection = 0;
-			std::cin >> selection;
-			std::cout << "Press 1 to add a person to the queue.\nPress 2 to call in the next person in the queue" << std::endl;
-			if(selection == 1) {
-				std::string name;
-				std::cout << "Please write your name: " << std::endl;
-				std::cin >> name;
-				Customer customer(name, queue);
-				queue.addCustomer(customer);
-				queue.getAllCustomers();
-			}
+			choiceFour(queue, nextQueueNumber);
+		}
+		else if(choice == 5) {
+			choiceFive(atm);
+		}
+		else if(choice == 6) {
+			choiceSix(cache);
 		}
 	}
 

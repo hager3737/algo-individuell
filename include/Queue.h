@@ -1,20 +1,20 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
+#include "Customer.h"
 #include <iostream>
 #include <vector>
+#include <queue>
 
-class Customer;
 
 class Queue {
-    std::vector<Customer> customers;
-    int amountOfCustomers;
+    std::queue<Customer> customers;
 
 public: 
-    Queue();
     void addCustomer(Customer& customer);
-    int getAmountOfCustomers();
-    std::vector<Customer> getAllCustomers();
+    Customer getNextCustomer();
+    bool isEmpty();
+    size_t size();
 };
 
 

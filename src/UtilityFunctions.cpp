@@ -1,13 +1,6 @@
 #include "../include/UtilityFunctions.h"
 #include "../include/SensorData.h"
-
-
-void ShowMenu() {
-    std::cout << "OPTIONS: " << std::endl;
-    std::cout << "1. Altitude sensor register." << std::endl;
-    std::cout << "2. SpeedInKm sensor register." << std::endl;
-    std::cout << "3. Fuel consumtion update." << std::endl;
-}
+#include "../include/Customer.h"
 
 void FillData(std::vector<SensorData>& v) {
     srand(time(NULL));
@@ -91,20 +84,40 @@ void fuelConsumptionUpdate(std::vector<SensorData>& sensorData) {
             std::cout << "Meassurement " << i + 1 << ": " << data.GetValue() << std::endl;
         }
     }
+}
 
-    // std::cout << "Before changes: " << std::endl;
-    // for (SensorData& data : sensorData) {
-    //     if (data.GetSensorType() == SensorType::FuelConsumption) {
-    //         std::cout << data.GetValue() << std::endl;
-    //         float temp = 0.75 * data.GetValue();
-    //         data.SetValue(temp + data.GetValue());
-    //     }
-    // }
-    // std::cout << "After changes: " << std::endl;
-    // std::cout << "***************************" << std::endl;
-    // for (SensorData& data : sensorData) {
-    //     if (data.GetSensorType() == SensorType::FuelConsumption) {
-    //         std::cout << data.GetValue() << std::endl;
-    //     }
-    // }
+std::chrono::seconds getTimeWaited(Customer& customer) {
+    auto currentTime = std::chrono::steady_clock::now();
+    auto waitTime = std::chrono::duration_cast<std::chrono::seconds>(currentTime - customer.getArrivalTime());
+    return waitTime;
+}
+
+void generatePlayersFile(std::string& filename, int numPlayers) {
+    std::ofstream file(filename);
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> jerseyDist(1, 99);
+    std::uniform_int_distribution<> teamDist(1, 30);
+
+    for (int i = 1; i <= numPlayers; ++i) {
+        file << i << ",Player" << i << "," << jerseyDist(gen) << ",Team" << teamDist(gen) << "\n";
+    }
+}
+
+HockeyPlayer readPlayerFromFile(std::string& filename, int id) {
+    std::ifstream file(filename);
+    std::string line;
+    while (std::getline(file, line)) {
+        std::istringstream iss(line);
+        int playerId, jersey;
+        std::string name, teamName;
+
+        char delimiter;
+        iss >> playerId >> delimiter >> name >> delimiter >> jersey >> delimiter >> teamName;
+
+        if (playerId == id) {
+            return HockeyPlayer(playerId, name, jersey, teamName);
+        }
+    }
+    throw std::runtime_error("Player not found");
 }
