@@ -4,13 +4,15 @@ void Queue::addCustomer(Customer& customer) {
     customers.push(customer);
 }
 
-Customer Queue::getNextCustomer() {
+Customer* Queue::getNextCustomer() {
     if(customers.empty()) {
-        throw std::out_of_range("Queue is empty!");
-    }
-    Customer nextCustomer = customers.front();
+        return nullptr;
+    } 
+    else {
+        Customer* nextCustomer = new Customer (customers.front());
     customers.pop();
     return nextCustomer;
+    }
 }
 
 bool Queue::isEmpty() {

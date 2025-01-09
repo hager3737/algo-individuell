@@ -13,6 +13,7 @@ class SensorData {
     float value;
     SensorType sensorType;
     time_t time;
+    
 public:
     SensorData(SensorType sensorType, float value, time_t time);
     SensorType GetSensorType();

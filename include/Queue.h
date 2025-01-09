@@ -12,7 +12,7 @@ class Queue {
 
 public: 
     void addCustomer(Customer& customer);
-    Customer getNextCustomer();
+    Customer* getNextCustomer();
     bool isEmpty();
     size_t size();
 };

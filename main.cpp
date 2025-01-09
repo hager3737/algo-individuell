@@ -38,6 +38,4 @@ int main() {
 			choiceSix(cache);
 		}
 	}
-
-    return 0;
 }

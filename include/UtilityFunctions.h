@@ -10,6 +10,7 @@
 #include <chrono>
 #include <fstream>
 #include <random>
+#include <memory>
 #include <sstream>
 #include "Customer.h"
 #include "HockeyPlayer.h"
@@ -22,6 +23,6 @@ void maxSpeedCheck(std::vector<SensorData> sensorData);
 void fuelConsumptionUpdate(std::vector<SensorData>& sensorData);
 std::chrono::seconds getTimeWaited(Customer& customer);
 void generatePlayersFile(std::string& filename, int numPlayers);
-HockeyPlayer readPlayerFromFile(std::string& filename, int id);
+std::unique_ptr<HockeyPlayer> readPlayerFromFile(std::string& filename, int id);
 
 #endif // UTILITYFUNCTIONS_H

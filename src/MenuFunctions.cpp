@@ -38,10 +38,14 @@ void choiceFour(Queue& queue, int &nextQueueNumber) {
 				std::cout << "Customer added with queue number: " << newCustomer.getQueueTicket() << std::endl;
 			}
 			else if(selection == 2) {
-				Customer nextCustomer = queue.getNextCustomer();
-				auto waitTime = getTimeWaited(nextCustomer);
+				Customer* nextCustomer = queue.getNextCustomer();
+				if(nextCustomer == nullptr) {
+					std::cout << "Queue is empty." << std::endl;
+					return;
+				}
+				auto waitTime = getTimeWaited(*nextCustomer);
 				(nextQueueNumber)--;
-				std::cout << "Next customer is " << nextCustomer.getQueueTicket() << ". You waited for " << waitTime.count() << " seconds." << std::endl;
+				std::cout << "Next customer is " << nextCustomer->getQueueTicket() << " Name: " << nextCustomer->getName() <<". Time waited: " << waitTime.count() << " seconds." << std::endl;
 			}
 		}
 }
@@ -77,9 +81,13 @@ void choiceFive(ATM& atm) {
 			std::cout << "Please enter an account number to login with:" << std::endl;
 			std::cin >> accountNumber;
 			std::cout << "Signing in to account: " << accountNumber << "..." << std::endl;
-			atm.login(accountNumber);
-			loggedIn = true;
-			std::cout << "You are now logged in. Our services are below." << std::endl;
+			if(atm.login(accountNumber)) {
+				loggedIn = true;
+				std::cout << "You are now logged in. Our services are below." << std::endl;
+			}
+			else {
+				std::cout << "Error logging in, try again or create an account." << std::endl;
+			}
 		}
 		else if(selection == 3 && loggedIn) {
 			double amount;
@@ -99,19 +107,25 @@ void choiceFive(ATM& atm) {
 void choiceSix(LRUCache& cache) {
 	std::string fileName = "hockey_players.txt";
 	generatePlayersFile(fileName, 100000);
-	int playerId;
+	int playerId = 1;
 
-	while(true){
-		std::cout << "Enter player id to find player." << std::endl;
+	while(playerId != 0){
+		std::cout << "Enter player id between 1 and 100 000 to find a player in our record. Enter 0 to exit." << std::endl;
 		std::cin >> playerId;
 		HockeyPlayer* player = cache.getPlayer(playerId);
 		if(player) {
-			std::cout << "Cache hit: " << player->name << "\n";
+			std::cout << "Player found in cache: " << player->name << std::endl;;
 		}
-		else {
-			std::cout << "Cache miss: Loading player " << playerId << "\n";
-			HockeyPlayer newPlayer = readPlayerFromFile(fileName, playerId);
-			cache.addPlayer(newPlayer);
+		else if(!player){
+			std::cout << "Player not found in cache: Loading player from file: " << playerId << "\n";
+			auto newPlayer = readPlayerFromFile(fileName, playerId);
+			if(!newPlayer) {
+				std::cout << "No player with that id found in our record." << std::endl;
+			}
+			else {
+				cache.addPlayer(*newPlayer);
+				std::cout << "Found player: " << "ID: " << newPlayer->id << " Name: " << newPlayer->name << " Jersey: " << newPlayer->jersey << " Team: " << newPlayer->teamName << std::endl; 
+			}
 		}
 	}
 }

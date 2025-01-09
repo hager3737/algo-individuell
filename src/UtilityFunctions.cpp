@@ -1,6 +1,7 @@
 #include "../include/UtilityFunctions.h"
 #include "../include/SensorData.h"
 #include "../include/Customer.h"
+#include <memory>
 
 void FillData(std::vector<SensorData>& v) {
     srand(time(NULL));
@@ -63,11 +64,14 @@ void maxSpeedCheck(std::vector<SensorData> sensorData) {
 
 void fuelConsumptionUpdate(std::vector<SensorData>& sensorData) {
 
-    std::cout << "5 first measuremnets before 75% increase" << std::endl;
-    for(int i = 0; i <= 5; i++) {
+    int count = 0;
+
+    std::cout << "5 first measuremnets before 75 percent increase" << std::endl;
+    for(int i = 0; i < sensorData.size() && count < 5; i++) {
         SensorData& data = sensorData[i];
         if(data.GetSensorType() == SensorType::FuelConsumption) {
             std::cout << "Meassurement " << i + 1 << ": " << data.GetValue() << std::endl;
+            count++;
         }
     }
 
@@ -77,11 +81,13 @@ void fuelConsumptionUpdate(std::vector<SensorData>& sensorData) {
         }
     });
 
+    count = 0;
     std::cout << "\nAfter increase:" << std::endl;
-    for(int i = 0; i <= 5; i++) {
+    for(int i = 0; i < sensorData.size() && count < 5; i++) {
         SensorData& data = sensorData[i];
         if(data.GetSensorType() == SensorType::FuelConsumption) {
             std::cout << "Meassurement " << i + 1 << ": " << data.GetValue() << std::endl;
+            count++;
         }
     }
 }
@@ -104,20 +110,24 @@ void generatePlayersFile(std::string& filename, int numPlayers) {
     }
 }
 
-HockeyPlayer readPlayerFromFile(std::string& filename, int id) {
+std::unique_ptr<HockeyPlayer> readPlayerFromFile(std::string& filename, int id) {
     std::ifstream file(filename);
     std::string line;
     while (std::getline(file, line)) {
         std::istringstream iss(line);
-        int playerId, jersey;
-        std::string name, teamName;
+        std::string playerIdStr, name, jerseyStr, teamName;
 
-        char delimiter;
-        iss >> playerId >> delimiter >> name >> delimiter >> jersey >> delimiter >> teamName;
+        std::getline(iss, playerIdStr, ',');
+        std::getline(iss, name, ',');
+        std::getline(iss, jerseyStr, ',');
+        std::getline(iss, teamName, ',');
+
+        int playerId = std::stoi(playerIdStr);
+        int jersey = std::stoi(jerseyStr);
 
         if (playerId == id) {
-            return HockeyPlayer(playerId, name, jersey, teamName);
+            return std::make_unique<HockeyPlayer>(playerId, name, jersey, teamName);
         }
     }
-    throw std::runtime_error("Player not found");
+    return nullptr; 
 }
